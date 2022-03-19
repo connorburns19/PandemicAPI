@@ -7,6 +7,7 @@ exports.Parse = (csvstring) => {
       dataskeleton.push([parsedbody[0][i], 0]);
 
     }
+  
 
     let rowstoadd = []
     for(let i = 1; i < parsedbody.length; i+=1){

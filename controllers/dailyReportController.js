@@ -1,8 +1,9 @@
 const sequelize = require('../sequelize.js').sequelize;
 const { DataTypes } = require('sequelize');
 const queryInterface = sequelize.getQueryInterface();
-
+const dailyReportsParser = require('../parsers/dailyReportsParser.js');
 const { QueryInterface } = require('sequelize');
+const { rows } = require('pg/lib/defaults');
 
 exports.addReport = async (req, res) => {
     const name = req.params.dailyreport_name
@@ -16,84 +17,65 @@ exports.addReport = async (req, res) => {
 
     const dailyReport = sequelize.define('dailyReport', {
         // Model attributes are defined here
-        fips: {
-          type: DataTypes.STRING,
-          allowNull: false
-        }, 
-      
-        provinceOrTerritory: {
+        
+        Province_State: {
           type: DataTypes.STRING,
           allowNull: false
         },
-        country: {
+        Country_Region: {
           type: DataTypes.STRING,
           allowNull: false
           // allowNull defaults to true
         },
-        lastUpdate: {
+        
+        Confirmed: {
           type: DataTypes.STRING,
           allowNull: false
         },
-        lat: {
-          type: DataTypes.STRING,
-          allowNull: false
-        },
-        long: {
-          type: DataTypes.STRING,
-          allowNull: false
-        },
-        confirmed: {
-          type: DataTypes.STRING,
-          allowNull: false
-        },
-        deaths: {
+        Deaths: {
           type: DataTypes.STRING,
           allowNull: false
         }, 
-        recovered: {
+        Recovered: {
           type: DataTypes.STRING,
           allowNull: false
         },
-        active: {
+        Active: {
           type: DataTypes.STRING,
           allowNull: false
         },
-        combinedKey: {
+        Combined_Key: {
           type: DataTypes.STRING,
           allowNull: false
-        },
-        incidenceRate: {
-          type: DataTypes.STRING,
-          allowNull: false
-        },
-        caseFatalityRatio: {
-          type: DataTypes.STRING,
-          allowNull: false
-        },
+        }
       }, { 
         tableName: name
       });
 
 
-    await dailyReport.sync();  
+    await dailyReport.sync(); 
+    const rowstoadd = dailyReportsParser.Parse(body);
 
-    const report = await sequelize.models.dailyReport.create({
-        fips: 'sus',
-        provinceOrTerritory: 'sus',
-        country: 'sus',
-        lastUpdate: 'sus',
-        lat: 'sus',
-        long: 'sus',
-        confirmed: 'sus',
-        deaths: 'sus',
-        recovered: 'sus',
-        active: 'sus',
-        combinedKey: 'sus',
-        incidenceRate:'sus',
-        caseFatalityRatio: 'sus'
+    for(let i = 0; i < rowstoadd.length; i+=1){
+      const report = await sequelize.models.dailyReport.create({
+        Province_State: rowstoadd[i].provincestate,
+        Country_Region: rowstoadd[i].countryregion,
+        Confirmed: rowstoadd[i].confirmed,
+        Deaths: rowstoadd[i].deaths,
+        Recovered: rowstoadd[i].recovered,
+        Active: rowstoadd[i].active,
+        Combined_Key: rowstoadd[i].combinedkey,
     });
     console.log("auto-generated ID:", report.id);
+    
+      
+    };
     res.status(200).send("Upload succesful");
+    
+
+    
+
+    
     //res.status(400).send("Malformed request");
     //res.status(422).send("Invalid file contents");
     return
