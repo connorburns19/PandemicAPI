@@ -1,13 +1,14 @@
 const sequelize = require('../sequelize.js').sequelize;
 const { DataTypes } = require('sequelize');
 const queryInterface = sequelize.getQueryInterface();
-
+const Papa = require('papaparse');
 const { QueryInterface } = require('sequelize');
 
 exports.addSeries = async (req, res) => {
     const name = req.params.timeseries_name
     const datatype = req.params.data_type
     const body = req.body
+    console.log(body);
     const tablename = name + datatype
 
 
@@ -42,6 +43,9 @@ exports.addSeries = async (req, res) => {
 
     await timeSeries.sync();  
 
+    
+    const parsedbody = Papa.parse(body)
+    console.log(parsedbody);
     const series = await sequelize.models.timeSeries.create({
         provinceOrTerritory: 'sus',
         country: 'sus',

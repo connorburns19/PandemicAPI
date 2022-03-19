@@ -6,7 +6,7 @@ const { QueryInterface } = require('sequelize');
 
 exports.addReport = async (req, res) => {
     const name = req.params.dailyreport_name
-    
+    console.log(req)
     const body = req.body
     
     
