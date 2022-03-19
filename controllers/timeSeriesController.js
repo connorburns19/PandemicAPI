@@ -36,6 +36,10 @@ exports.addSeries = async (req, res) => {
     await timeSeries.sync();  
 
     const rowstoadd = timeSeriesParser.Parse(body);
+    if(rowstoadd == "INVALID"){
+      res.status(422).send("Invalid file format")
+      return
+    }
     console.log(rowstoadd);
     
       
@@ -52,7 +56,10 @@ exports.addSeries = async (req, res) => {
     res.status(200).send("Upload succesful");
   } catch(error) {
     res.status(400).send("Malformed Request")
+    return
   }
+
+  return
 
     
 
