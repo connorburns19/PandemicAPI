@@ -76,5 +76,7 @@ exports.deleteSeries = async (req, res) => {
     await queryInterface.dropTable(name + 'confirmed', {});
     await queryInterface.dropTable(name + 'recovered', {});
     
+    res.status(200).send("Sucessfully deleted");
+    return
 
 }

@@ -6,11 +6,11 @@ const router = express.Router();
 //router.get('/:dailyreport_name', dailyReportController.getReport);
 
 // POST
-//router.post('/:dailyreport_name', dailyReportController.addReport);
+router.post('/:dailyreport_name', dailyReportController.addReport);
 
 // DELETE
 
-//router.delete('/:dailyreport_name', dailyReportController.deleteReport);
+router.delete('/:dailyreport_name', dailyReportController.deleteReport);
 
 
 
