@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize/types";
 import { sequelize } from "../sequelize";
 
-const timeSeries = sequelize.define('TimeSeries', {
+const timeSeries = sequelize.define('timeSeries', {
   // Model attributes are defined here
   provinceOrTerritory: {
     type: DataTypes.STRING,
