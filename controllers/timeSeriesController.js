@@ -3,7 +3,7 @@ const { DataTypes } = require('sequelize');
 const queryInterface = sequelize.getQueryInterface();
 const Papa = require('papaparse');
 const { QueryInterface } = require('sequelize');
-
+const timeSeriesParser = require('../parsers/timeSeriesParser.js')
 exports.addSeries = async (req, res) => {
     const name = req.params.timeseries_name
     const datatype = req.params.data_type
@@ -16,22 +16,15 @@ exports.addSeries = async (req, res) => {
 
     const timeSeries = sequelize.define('timeSeries', {
         // Model attributes are defined here
-        provinceOrTerritory: {
+        ProvinceState: {
           type: DataTypes.STRING,
         },
-        country: {
+        CountryRegion: {
           type: DataTypes.STRING,
           allowNull: false
           // allowNull defaults to true
         },
-        lat: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        long: {
-          type: DataTypes.STRING,
-          allowNull: false
-        },
+    
         data: {
           type: DataTypes.ARRAY(DataTypes.ARRAY(DataTypes.STRING)),
           allowNull: false
@@ -43,17 +36,21 @@ exports.addSeries = async (req, res) => {
 
     await timeSeries.sync();  
 
+    const rowstoadd = timeSeriesParser.Parse(body);
+    console.log(rowstoadd);
     
-    const parsedbody = Papa.parse(body)
-    console.log(parsedbody);
-    const series = await sequelize.models.timeSeries.create({
-        provinceOrTerritory: 'sus',
-        country: 'sus',
-        lat: 'sus',
-        long: 'sus',
-        data: [['sus', 'sus2']]
+      
+    for(let i = 0; i < rowstoadd.length; i+=1){
+      const series = await sequelize.models.timeSeries.create({
+        ProvinceState: rowstoadd[i].provincestate,
+        CountryRegion: rowstoadd[i].countryregion,
+        data: rowstoadd[i].data
     });
     console.log("auto-generated ID:", series.id);
+
+    }
+
+
     res.status(200).send("Upload succesful");
     //res.status(400).send("Malformed request");
     //res.status(422).send("Invalid file contents");
