@@ -12,26 +12,25 @@ exports.addSeries = async (req, res) => {
     const tablename = name + datatype
 
 
-
-
+  try{
     const timeSeries = sequelize.define('timeSeries', {
-        // Model attributes are defined here
-        ProvinceState: {
-          type: DataTypes.STRING,
-        },
-        CountryRegion: {
-          type: DataTypes.STRING,
-          allowNull: false
-          // allowNull defaults to true
-        },
+      // Model attributes are defined here
+      ProvinceState: {
+        type: DataTypes.STRING,
+      },
+      CountryRegion: {
+        type: DataTypes.STRING,
+        allowNull: false
+        // allowNull defaults to true
+      },
     
-        data: {
-          type: DataTypes.ARRAY(DataTypes.ARRAY(DataTypes.STRING)),
-          allowNull: false
-        },
-      }, { 
-        tableName: tablename
-      });
+      data: {
+        type: DataTypes.ARRAY(DataTypes.ARRAY(DataTypes.STRING)),
+        allowNull: false
+      },
+    }, { 
+      tableName: tablename
+    });
 
 
     await timeSeries.sync();  
@@ -49,15 +48,13 @@ exports.addSeries = async (req, res) => {
     console.log("auto-generated ID:", series.id);
 
     }
-
-
+    
     res.status(200).send("Upload succesful");
-    //res.status(400).send("Malformed request");
-    //res.status(422).send("Invalid file contents");
-    return
+  } catch(error) {
+    res.status(400).send("Malformed Request")
+  }
 
-
-
+    
 
 }
 exports.deleteSeries = async (req, res) => {
