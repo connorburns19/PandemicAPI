@@ -112,46 +112,57 @@ exports.getReport  = async (req, res) => {
   }
   
   let countries = req.query.countries;
+  if(countries != undefined){
+    countries = countries.slice(1, countries.length - 1);
+    countries = countries.split(',');
+    for(let i = 0; i < countries.length; i+=1){
+      countries[i] = countries[i].trim()
+    }
+  }
   if(countries == undefined){
     countries = 'all'
   }
-  if(countries != undefined){
-    countries = countries.replace(' ', '');
-    countries = countries.slice(1, countries.length - 1);
-    countries = countries.split(',');
-  }
+  
   
   let regions = req.query.regions;
+  if(regions != undefined){
+    regions = regions.slice(1, regions.length - 1);
+    regions = regions.split(',');
+    for(let i = 0; i < regions.length; i+=1){
+      regions[i] = regions[i].trim()
+    }
+  }
   if(regions == undefined){
     regions = 'all'
   }
-  if(regions != undefined){
-    regions = regions.replace(' ', '');
-    regions = regions.slice(1, regions.length - 1);
-    regions = regions.split(',');
-  }
   
-  let combinedkey = req.query.combined_key;
+  
+  let combinedkey = req.query.combinedkey;
+  if(combinedkey != undefined){
+    combinedkey = combinedkey.slice(1, combinedkey.length - 1);
+    combinedkey = combinedkey.split('",');
+    for(let i = 0; i < combinedkey.length; i+=1){
+      combinedkey[i] = combinedkey[i].replaceAll(/"/g, '')
+      combinedkey[i] = combinedkey[i].trim()
+    }
+  }
   if(combinedkey == undefined){
     combinedkey = 'all'
   }
-  if(combinedkey != undefined){
-    combinedkey = combinedkey.replace(' ', '');
-    combinedkey = combinedkey.slice(1, combinedkey.length - 1);
-    combinedkey = combinedkey.split(',');
-
-  }
+  
 
   let data_type = req.query.data_type;
+  if(data_type != undefined){
+    data_type = data_type.slice(1, data_type.length - 1);
+    data_type = data_type.split(',');
+    for(let i = 0; i < data_type.length; i+=1){
+      data_type[i] = data_type[i].trim()
+    }
+  }
   if(data_type == undefined){
     data_type = ['active', 'confirmed', 'deaths', 'recovered']
   }
-  if(data_type != undefined){
-    data_type = data_type.replace(' ', '');
-    data_type = data_type.slice(1, data_type.length - 1);
-    data_type = data_type.split(',');
-
-  }
+  
   
   let format = req.query.format
   console.log(typeof(format));
@@ -201,7 +212,7 @@ console.log(format);
 //await dailyReport.sync(); 
 
 // Cases:
-// Only countries given
+// Countries only
 if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
   if(format == 'json'){
     dailyReport.findAll({
@@ -221,7 +232,7 @@ if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
       });
   }
   return
-  //Only provinces given
+  //Provinces only
 } else if(countries == 'all' && regions != 'all' && combinedkey == 'all'){
   if(format == 'json'){
     dailyReport.findAll({
@@ -240,6 +251,7 @@ if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
       
       });
   }
+  return
   //Combined key only
 } else if(countries == 'all' && regions == 'all' && combinedkey != 'all'){
   if(format == 'json'){
@@ -259,6 +271,7 @@ if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
       
       });
   }
+  return
   //countries and regions
 } else if(countries != 'all' && regions != 'all' && combinedkey == 'all'){
   if(format == 'json'){
@@ -267,7 +280,7 @@ if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
       where: {
         province_state: {
           [Op.or]: regions},
-        countries: {
+        country_region: {
           [Op.or]: countries}
         },
     }).then((results) => {
@@ -280,6 +293,7 @@ if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
       
       });
   }
+  return
   //countries, combinedkey
 } else if(countries != 'all' && regions == 'all' && combinedkey != 'all'){
   if(format == 'json'){
@@ -289,7 +303,7 @@ if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
         country_region: {
           [Op.or]: countries},
         combined_key: {
-          [Op.or]: combined_key
+          [Op.or]: combinedkey
         }
         }
     
@@ -303,6 +317,7 @@ if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
       
       });
   }
+  return
   //regions, combinedkey
 } else if(countries == 'all' && regions != 'all' && combinedkey != 'all'){
   if(format == 'json'){
@@ -326,6 +341,7 @@ if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
       
       });
   }
+  return
   //all attributes
 } else if(countries != 'all' && regions != 'all' && combinedkey != 'all'){
   if(format == 'json'){
@@ -337,7 +353,7 @@ if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
         country_region: {
           [Op.or]: countries},
         combined_key: {
-          [Op.or]: combined_key
+          [Op.or]: combinedkey
         }
         }
     
@@ -351,6 +367,7 @@ if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
       
       });
   }
+  return
   //no attributes specified, get all
 } else if(countries == 'all' && regions == 'all' && combinedkey == 'all'){
   if(format == 'json'){
@@ -367,6 +384,7 @@ if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
       
       });
   }
+  return
 }
 
 
