@@ -11,11 +11,7 @@ exports.addReport = async (req, res) => {
     console.log(req)
     const body = req.body
     
-    
-
-
-
-
+  
     const dailyReport = sequelize.define('dailyReport', {
         // Model attributes are defined here
         
@@ -114,38 +110,49 @@ exports.getReport  = async (req, res) => {
       res.status(400).send("Malformed Request");
       return
   }
+  
   let countries = req.query.countries;
-  if(countries != undefined){
-    countries = countries.replace(' ', '');
-    countries = countries.slice(1, countries.length - 1);
-    countries = countries.split(',');
-
-  }
-  
-  
-  console.log(countries)
-  
   if(countries == undefined){
     countries = 'all'
   }
+  if(countries != undefined){
+    countries = countries.replace(' ', '');
+    countries = countries.slice(1, data_type.length - 1);
+    countries = countries.split(',');
+  }
+  
   let regions = req.query.regions;
   if(regions == undefined){
     regions = 'all'
   }
+  if(regions != undefined){
+    regions = regions.replace(' ', '');
+    regions = regions.slice(1, data_type.length - 1);
+    regions = regions.split(',');
+  }
+  
   let combinedkey = req.query.combined_key;
   if(combinedkey == undefined){
     combinedkey = 'all'
   }
+  if(combinedkey != undefined){
+    combinedkey = combinedkey.replace(' ', '');
+    combinedkey = combinedkey.slice(1, data_type.length - 1);
+    combinedkey = combinedkey.split(',');
+
+  }
+
   let data_type = req.query.data_type;
+  if(data_type == undefined){
+    data_type = ['active', 'confirmed', 'deaths', 'recovered']
+  }
   if(data_type != undefined){
     data_type = data_type.replace(' ', '');
     data_type = data_type.slice(1, data_type.length - 1);
     data_type = data_type.split(',');
 
   }
-  if(data_type == undefined){
-    data_type = ['active', 'confirmed', 'deaths', 'recovered']
-  }
+  
   let format = req.query.format
   console.log(typeof(format));
   if(format == undefined){
@@ -344,6 +351,7 @@ if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
       
       });
   }
+  //no attributes specified, get all
 } else if(countries == 'all' && regions == 'all' && combinedkey == 'all'){
   if(format == 'json'){
     dailyReport.findAll({
