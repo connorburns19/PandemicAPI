@@ -104,6 +104,7 @@ exports.deleteReport = async (req, res) => {
     return
 
 }
+//GET QUERY
 exports.getReport  = async (req, res) => {
   const name = req.params.dailyreport_name;
   let notfoundcount = 0;
@@ -213,6 +214,151 @@ if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
       });
   }
   return
+  //Only provinces given
+} else if(countries == 'all' && regions != 'all' && combinedkey == 'all'){
+  if(format == 'json'){
+    dailyReport.findAll({
+      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
+      where: {
+        province_state: {
+          [Op.or]: regions}}
+    
+    }).then((results) => {
+    
+      let returnjson = {}
+      returnjson['queryrows'] = results;
+      res.status(200).send(returnjson);
+      console.log('Succesful Operation')
+      
+      
+      });
+  }
+  //Combined key only
+} else if(countries == 'all' && regions == 'all' && combinedkey != 'all'){
+  if(format == 'json'){
+    dailyReport.findAll({
+      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
+      where: {
+        combined_key: {
+          [Op.or]: combinedkey}}
+    
+    }).then((results) => {
+    
+      let returnjson = {}
+      returnjson['queryrows'] = results;
+      res.status(200).send(returnjson);
+      console.log('Succesful Operation')
+      
+      
+      });
+  }
+  //countries and regions
+} else if(countries != 'all' && regions != 'all' && combinedkey == 'all'){
+  if(format == 'json'){
+    dailyReport.findAll({
+      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
+      where: {
+        province_state: {
+          [Op.or]: regions},
+        countries: {
+          [Op.or]: countries}
+        },
+    }).then((results) => {
+    
+      let returnjson = {}
+      returnjson['queryrows'] = results;
+      res.status(200).send(returnjson);
+      console.log('Succesful Operation')
+      
+      
+      });
+  }
+  //countries, combinedkey
+} else if(countries != 'all' && regions == 'all' && combinedkey != 'all'){
+  if(format == 'json'){
+    dailyReport.findAll({
+      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
+      where: {
+        country_region: {
+          [Op.or]: countries},
+        combined_key: {
+          [Op.or]: combined_key
+        }
+        }
+    
+    }).then((results) => {
+    
+      let returnjson = {}
+      returnjson['queryrows'] = results;
+      res.status(200).send(returnjson);
+      console.log('Succesful Operation')
+      
+      
+      });
+  }
+  //regions, combinedkey
+} else if(countries == 'all' && regions != 'all' && combinedkey != 'all'){
+  if(format == 'json'){
+    dailyReport.findAll({
+      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
+      where: {
+        province_state: {
+          [Op.or]: regions},
+        combined_key: {
+          [Op.or]: combinedkey
+        }
+        }
+    
+    }).then((results) => {
+    
+      let returnjson = {}
+      returnjson['queryrows'] = results;
+      res.status(200).send(returnjson);
+      console.log('Succesful Operation')
+      
+      
+      });
+  }
+  //all attributes
+} else if(countries != 'all' && regions != 'all' && combinedkey != 'all'){
+  if(format == 'json'){
+    dailyReport.findAll({
+      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
+      where: {
+        province_state: {
+          [Op.or]: regions},
+        country_region: {
+          [Op.or]: countries},
+        combined_key: {
+          [Op.or]: combined_key
+        }
+        }
+    
+    }).then((results) => {
+    
+      let returnjson = {}
+      returnjson['queryrows'] = results;
+      res.status(200).send(returnjson);
+      console.log('Succesful Operation')
+      
+      
+      });
+  }
+} else if(countries == 'all' && regions == 'all' && combinedkey == 'all'){
+  if(format == 'json'){
+    dailyReport.findAll({
+      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
+    
+    }).then((results) => {
+    
+      let returnjson = {}
+      returnjson['queryrows'] = results;
+      res.status(200).send(returnjson);
+      console.log('Succesful Operation')
+      
+      
+      });
+  }
 }
 
 
