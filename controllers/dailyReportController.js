@@ -117,7 +117,7 @@ exports.getReport  = async (req, res) => {
   }
   if(countries != undefined){
     countries = countries.replace(' ', '');
-    countries = countries.slice(1, data_type.length - 1);
+    countries = countries.slice(1, countries.length - 1);
     countries = countries.split(',');
   }
   
@@ -127,7 +127,7 @@ exports.getReport  = async (req, res) => {
   }
   if(regions != undefined){
     regions = regions.replace(' ', '');
-    regions = regions.slice(1, data_type.length - 1);
+    regions = regions.slice(1, regions.length - 1);
     regions = regions.split(',');
   }
   
@@ -137,7 +137,7 @@ exports.getReport  = async (req, res) => {
   }
   if(combinedkey != undefined){
     combinedkey = combinedkey.replace(' ', '');
-    combinedkey = combinedkey.slice(1, data_type.length - 1);
+    combinedkey = combinedkey.slice(1, combinedkey.length - 1);
     combinedkey = combinedkey.split(',');
 
   }
