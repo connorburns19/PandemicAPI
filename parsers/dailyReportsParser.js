@@ -6,14 +6,14 @@ exports.Parse = (csvstring) => {
     
 
     let rowstoadd = []
-    let firstRowLength = parsedbody[i].length
+    let firstRowLength = parsedbody[0].length
     for(let i = 1; i < parsedbody.length; i+=1){
       let row = parsedbody[i]
       
       if(row.length != firstRowLength){
         return "INVALID"
       }
-      
+
       let provincestate = row[2];
       let countryregion = row[3]
       let confirmed = row[7];

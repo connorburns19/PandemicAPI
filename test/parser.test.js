@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const { assert } = require('chai');
 const timeSeriesParser = require('../parsers/timeSeriesParser.js')
-// var dailyReportParser = require('../parsers/dailyReportParser.js')
+const dailyReportParser = require('../parsers/dailyReportsParser.js')
 
 describe("Parser Tests", function(){
     describe("Time Series Parser Test", function(){
@@ -14,11 +14,17 @@ describe("Parser Tests", function(){
             assert.equal(rows[0].data[0][1], '3')
         })  
     })
-    //TODO once dailyReportParser is implemented
     describe("Daily Report Parser", function(){
-        it('Parsese String into Daily Reports', function(){
-            const exampleString = ''
-
+        it('Parses String into Daily Reports', function(){
+            const exampleString = 'Fips,Admin,Province,Country,LastUpdate,Lat,Long,Deaths,Confirmed,Active,Recovered,CombinedKey\nFips,Admin,Ohio,America,Yesterday,44.0,22.0,1,2,3,4,"Ohio, America"'
+            const rows = dailyReportParser.Parse(exampleString)
+            assert.equal(rows[0].provincestate, 'Ohio')
+            assert.equal(rows[0].countryregion, 'America')
+            assert.equal(rows[0].confirmed, '1')
+            assert.equal(rows[0].deaths, '2')
+            assert.equal(rows[0].recovered, '3')
+            assert.equal(rows[0].active, '4')
+            assert.equal(rows[0].combinedkey, 'Ohio, America')
         })
     })
 })
