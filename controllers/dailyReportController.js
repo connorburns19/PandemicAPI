@@ -1,9 +1,10 @@
 const sequelize = require('../sequelize.js').sequelize;
-const { DataTypes } = require('sequelize');
+const { DataTypes, Op } = require('sequelize');
 const queryInterface = sequelize.getQueryInterface();
 const dailyReportsParser = require('../parsers/dailyReportsParser.js');
 const { QueryInterface } = require('sequelize');
 const { rows } = require('pg/lib/defaults');
+
 
 exports.addReport = async (req, res) => {
     const name = req.params.dailyreport_name
@@ -18,33 +19,33 @@ exports.addReport = async (req, res) => {
     const dailyReport = sequelize.define('dailyReport', {
         // Model attributes are defined here
         
-        Province_State: {
+        province_state: {
           type: DataTypes.STRING,
           allowNull: false
         },
-        Country_Region: {
+        country_region: {
           type: DataTypes.STRING,
           allowNull: false
           // allowNull defaults to true
         },
         
-        Confirmed: {
+        confirmed: {
           type: DataTypes.STRING,
           allowNull: false
         },
-        Deaths: {
+        deaths: {
           type: DataTypes.STRING,
           allowNull: false
         }, 
-        Recovered: {
+        recovered: {
           type: DataTypes.STRING,
           allowNull: false
         },
-        Active: {
+        active: {
           type: DataTypes.STRING,
           allowNull: false
         },
-        Combined_Key: {
+        combined_key: {
           type: DataTypes.STRING,
           allowNull: false
         }
@@ -58,13 +59,13 @@ exports.addReport = async (req, res) => {
 
     for(let i = 0; i < rowstoadd.length; i+=1){
       const report = await sequelize.models.dailyReport.create({
-        Province_State: rowstoadd[i].provincestate,
-        Country_Region: rowstoadd[i].countryregion,
-        Confirmed: rowstoadd[i].confirmed,
-        Deaths: rowstoadd[i].deaths,
-        Recovered: rowstoadd[i].recovered,
-        Active: rowstoadd[i].active,
-        Combined_Key: rowstoadd[i].combinedkey,
+        province_state: rowstoadd[i].provincestate,
+        country_region: rowstoadd[i].countryregion,
+        confirmed: rowstoadd[i].confirmed,
+        deaths: rowstoadd[i].deaths,
+        recovered: rowstoadd[i].recovered,
+        active: rowstoadd[i].active,
+        combined_key: rowstoadd[i].combinedkey,
     });
     console.log("auto-generated ID:", report.id);
     
@@ -103,3 +104,143 @@ exports.deleteReport = async (req, res) => {
     return
 
 }
+exports.getReport  = async (req, res) => {
+  const name = req.params.dailyreport_name;
+  let notfoundcount = 0;
+  try {await queryInterface.describeTable(name);} catch(error){notfoundcount+=1}
+
+  if (notfoundcount == 1){
+      res.status(400).send("Malformed Request");
+      return
+  }
+  let countries = req.query.countries;
+  if(countries != undefined){
+    countries = countries.replace(' ', '');
+    countries = countries.slice(1, countries.length - 1);
+    countries = countries.split(',');
+
+  }
+  
+  
+  console.log(countries)
+  
+  if(countries == undefined){
+    countries = 'all'
+  }
+  let regions = req.query.regions;
+  if(regions == undefined){
+    regions = 'all'
+  }
+  let combinedkey = req.query.combined_key;
+  if(combinedkey == undefined){
+    combinedkey = 'all'
+  }
+  let data_type = req.query.data_type;
+  if(data_type != undefined){
+    data_type = data_type.replace(' ', '');
+    data_type = data_type.slice(1, data_type.length - 1);
+    data_type = data_type.split(',');
+
+  }
+  if(data_type == undefined){
+    data_type = ['active', 'confirmed', 'deaths', 'recovered']
+  }
+  let format = req.query.format
+  console.log(typeof(format));
+  if(format == undefined){
+    format = 'csv'
+  }
+
+
+  const dailyReport = sequelize.define('dailyReport', {
+    // Model attributes are defined here
+    
+    province_state: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    country_region: {
+      type: DataTypes.STRING,
+      allowNull: false
+      // allowNull defaults to true
+    },
+    
+    confirmed: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    deaths: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }, 
+    recovered: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    active: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    combined_key: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
+  }, { 
+    tableName: name
+  });
+
+console.log(format);
+//await dailyReport.sync(); 
+
+// Cases:
+// Only countries given
+if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
+  if(format == 'json'){
+    dailyReport.findAll({
+      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
+      where: {
+        country_region: {
+          [Op.or]: countries}}
+    
+    }).then((results) => {
+    
+      let returnjson = {}
+      returnjson['queryrows'] = results;
+      res.status(200).send(returnjson);
+      console.log('Succesful Operation')
+      
+      
+      });
+  }
+  return
+}
+
+
+
+
+
+
+
+
+
+  if(format == 'json'){
+    dailyReport.findAll().then((results) => {
+    
+      let returnjson = {}
+      returnjson['queryrows'] = results;
+      res.status(200).send(returnjson);
+      console.log('Succesful Operation')
+      return
+      
+      });
+  }
+}
+
+
+
+
+
+
+
+
+

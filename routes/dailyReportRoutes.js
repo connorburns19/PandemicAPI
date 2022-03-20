@@ -3,7 +3,7 @@ const dailyReportController = require('../controllers/dailyReportController.js')
 
 const router = express.Router();
 //GET
-//router.get('/:dailyreport_name', dailyReportController.getReport);
+router.get('/:dailyreport_name', dailyReportController.getReport);
 
 // POST
 router.post('/:dailyreport_name', dailyReportController.addReport);
