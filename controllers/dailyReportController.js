@@ -241,7 +241,7 @@ exports.getReport  = async (req, res) => {
       
       });
       return
-  } else if(format == 'csv') {
+  } else if (format == 'csv'){
     dailyReport.findAll({
       attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
       where: where
@@ -254,7 +254,7 @@ exports.getReport  = async (req, res) => {
         returnstring = returnstring + "," + data_type[i][0].toUpperCase() + data_type[i].substr(1);
       }
       
-      returnstring = returnstring + "," + "CombinedKey\n"
+      returnstring = returnstring + "," + "Combined_Key\n"
       
       for(let i = 0; i < results.length; i+=1){
         returnstring = returnstring + results[i].province_state + "," + results[i].country_region + ",";
@@ -270,6 +270,9 @@ exports.getReport  = async (req, res) => {
       
       });
       return
+  } else {
+    res.status(400).send("Malformed Request")
+    return
   }
   
 }
