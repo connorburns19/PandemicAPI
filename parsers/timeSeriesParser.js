@@ -25,7 +25,7 @@ exports.Parse = (csvstring) => {
 
       try{
         for(let i = 4; i < headerLength; i+=1){
-          data[i - 4][1] = row[i];
+          data[i - 4][1] = parseInt(row[i], 10);
         }
       } catch(error) {
         //checks if the data is not of the right length

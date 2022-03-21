@@ -3,7 +3,7 @@ const timeSeriesController = require('../controllers/timeSeriesController.js');
 
 const router = express.Router();
 //get by name and data type
-//router.get('/:timeseries_name/:data_type', timeSeriesController.getSeries);
+router.get('/:timeseries_name/:data_type', timeSeriesController.getSeries);
 
 router.post('/:timeseries_name/:data_type', timeSeriesController.addSeries);
 
