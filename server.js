@@ -11,6 +11,4 @@ app.use(bodyParser.text());
 
 app.use('/api/time_series', timeSeriesRoutes);
 app.use('/api/daily_reports', dailyReportRoutes);
-app.listen(port, () => {
-  console.log("Example app listening on port ${port}!")
-});
+module.exports = app.listen(port, () => {console.log(`Example app listening on port ${port}!`)});

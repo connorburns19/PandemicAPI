@@ -1,4 +1,5 @@
 const sequelize = require('../sequelize.js').sequelize;
+const { rows } = require('pg/lib/defaults');
 const { DataTypes, Op } = require('sequelize');
 const queryInterface = sequelize.getQueryInterface();
 const dailyReportsParser = require('../parsers/dailyReportsParser.js');
@@ -6,7 +7,6 @@ const dailyReportsParser = require('../parsers/dailyReportsParser.js');
 //POST QUERY
 exports.addReport = async (req, res) => {
     const name = req.params.dailyreport_name
-    console.log(req)
     const body = req.body
     
     try {
@@ -21,7 +21,6 @@ exports.addReport = async (req, res) => {
           type: DataTypes.STRING,
           allowNull: false,
           primaryKey: true
-          // allowNull defaults to true
         },
         
         confirmed: {
@@ -49,8 +48,10 @@ exports.addReport = async (req, res) => {
       });
 
 
-      await dailyReport.sync(); 
+      await dailyReport.sync();
+
       const rowstoadd = dailyReportsParser.Parse(body);
+      
       if(rowstoadd == "INVALID"){
         //this check happens in parser
         res.status(422).send("Invalid format");
@@ -181,7 +182,6 @@ exports.getReport  = async (req, res) => {
     country_region: {
       type: DataTypes.STRING,
       allowNull: false
-      // allowNull defaults to true
     },
     
     confirmed: {
@@ -263,11 +263,9 @@ exports.getReport  = async (req, res) => {
         }
         returnstring = returnstring + '"' + results[i].combined_key + '"\n'
       }
-    
+      console.log(returnstring)
       res.status(200).send(returnstring);
       console.log('Succesful Operation')
-      
-      
       });
       return
   } else {
