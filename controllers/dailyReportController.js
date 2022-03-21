@@ -271,8 +271,9 @@ exports.getReport  = async (req, res) => {
       console.log(returnstring)
       res.status(200).send(returnstring);
       console.log('Succesful Operation')
-      });
       return
+      });
+      
   } else {
     res.status(400).send("Malformed Request")
     return
