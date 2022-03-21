@@ -211,7 +211,7 @@ exports.getSeries = async (req, res) => {
           console.log('Succesful Operation')
       });
       }
-      else{
+      else if (format == 'csv'){
         let topdone = 0;
         timeSeries.findAll({
           attributes: ['provincestate', 'countryregion', 'data'], 
@@ -274,6 +274,9 @@ exports.getSeries = async (req, res) => {
           console.log('Succesful Operation')
       });
 
+      }
+      else{
+        res.status(400).send("Malformed Request");
       }
 
     }
