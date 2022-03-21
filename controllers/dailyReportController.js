@@ -227,7 +227,7 @@ exports.getReport  = async (req, res) => {
     }).then((results) => {
     
       let returnjson = {}
-      
+
       for(let i = 0; i < results.length; i+=1){
         const olddata = results[i]
         for(let j = 0; j < data_type.length; j+=1){
@@ -240,8 +240,38 @@ exports.getReport  = async (req, res) => {
       
       
       });
+      return
+  } else if(format == 'csv') {
+    dailyReport.findAll({
+      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
+      where: where
+    
+    }).then((results) => {
+    
+      let returnstring = 'Province/State,Country/Region'
+      
+      for(let i = 0; i < data_type.length; i++){
+        returnstring = returnstring + "," + data_type[i][0].toUpperCase() + data_type[i].substr(1);
+      }
+      
+      returnstring = returnstring + "," + "CombinedKey\n"
+      
+      for(let i = 0; i < results.length; i+=1){
+        returnstring = returnstring + results[i].province_state + "," + results[i].country_region + ",";
+        for(let j = 1; j < data_type.length + 1; j++){
+          returnstring = returnstring + results[i][data_type[j - 1]] + ","
+        }
+        returnstring = returnstring + '"' + results[i].combined_key + '"\n'
+      }
+    
+      res.status(200).send(returnstring);
+      console.log('Succesful Operation')
+      
+      
+      });
+      return
   }
-  return
+  
 }
 
 
