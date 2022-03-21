@@ -31,6 +31,9 @@ exports.Parse = (csvstring) => {
       try{
         for(let i = 4; i < headerLength; i+=1){
           data[i - 4][1] = parseInt(row[i], 10);
+          if (parseInt(row[i], 10) < 0 ||  isNaN(parseInt(row[i], 10))){
+              return "MALFORMED"
+          }
          
         }
       } catch(error) {
