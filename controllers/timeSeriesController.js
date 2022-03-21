@@ -8,7 +8,7 @@ exports.addSeries = async (req, res) => {
     const name = req.params.timeseries_name
     const datatype = req.params.data_type
     const body = req.body
-    console.log(body);
+    
     const tablename = name + datatype
 
 
@@ -17,10 +17,12 @@ exports.addSeries = async (req, res) => {
       // Model attributes are defined here
       provincestate: {
         type: DataTypes.STRING,
+        primaryKey: true
       },
       countryregion: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        primaryKey: true
         // allowNull defaults to true
       },
     
@@ -36,15 +38,18 @@ exports.addSeries = async (req, res) => {
     await timeSeries.sync();  
 
     const rowstoadd = timeSeriesParser.Parse(body);
+    console.log(rowstoadd[0].data[0][1] + "HEEEEEEEEER");
+    console.log(rowstoadd[1].data[0][1] + "HEEEEEEEEER");
+    console.log(rowstoadd[2].data[0][1] + "HEEEEEEEEER");
     if(rowstoadd == "INVALID"){
       res.status(422).send("Invalid file format")
       return
     }
-    console.log(rowstoadd);
+    
     
       
     for(let i = 0; i < rowstoadd.length; i+=1){
-      const series = await sequelize.models.timeSeries.create({
+      const series = await sequelize.models.timeSeries.upsert({
         provincestate: rowstoadd[i].provincestate,
         countryregion: rowstoadd[i].countryregion,
         data: rowstoadd[i].data
@@ -163,7 +168,7 @@ exports.getSeries = async (req, res) => {
     if (regions != 'all'){
       where.provincestate = {[Op.or]: regions}
     }
-    console.log(where);
+    
    
       if(format == 'json'){
         timeSeries.findAll({
