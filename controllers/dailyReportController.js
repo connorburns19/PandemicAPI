@@ -213,199 +213,52 @@ console.log(format);
 
 // Cases:
 // Countries only
-if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
-  if(format == 'json'){
-    dailyReport.findAll({
-      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
-      where: {
-        country_region: {
-          [Op.or]: countries}}
-    
-    }).then((results) => {
-    
-      let returnjson = {}
-      returnjson['queryrows'] = results;
-      res.status(200).send(returnjson);
-      console.log('Succesful Operation')
-      
-      
-      });
-  }
-  return
-  //Provinces only
-} else if(countries == 'all' && regions != 'all' && combinedkey == 'all'){
-  if(format == 'json'){
-    dailyReport.findAll({
-      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
-      where: {
-        province_state: {
-          [Op.or]: regions}}
-    
-    }).then((results) => {
-    
-      let returnjson = {}
-      returnjson['queryrows'] = results;
-      res.status(200).send(returnjson);
-      console.log('Succesful Operation')
-      
-      
-      });
-  }
-  return
-  //Combined key only
-} else if(countries == 'all' && regions == 'all' && combinedkey != 'all'){
-  if(format == 'json'){
-    dailyReport.findAll({
-      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
-      where: {
-        combined_key: {
-          [Op.or]: combinedkey}}
-    
-    }).then((results) => {
-    
-      let returnjson = {}
-      returnjson['queryrows'] = results;
-      res.status(200).send(returnjson);
-      console.log('Succesful Operation')
-      
-      
-      });
-  }
-  return
-  //countries and regions
-} else if(countries != 'all' && regions != 'all' && combinedkey == 'all'){
-  if(format == 'json'){
-    dailyReport.findAll({
-      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
-      where: {
-        province_state: {
-          [Op.or]: regions},
-        country_region: {
-          [Op.or]: countries}
-        },
-    }).then((results) => {
-    
-      let returnjson = {}
-      returnjson['queryrows'] = results;
-      res.status(200).send(returnjson);
-      console.log('Succesful Operation')
-      
-      
-      });
-  }
-  return
-  //countries, combinedkey
-} else if(countries != 'all' && regions == 'all' && combinedkey != 'all'){
-  if(format == 'json'){
-    dailyReport.findAll({
-      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
-      where: {
-        country_region: {
-          [Op.or]: countries},
-        combined_key: {
-          [Op.or]: combinedkey
-        }
-        }
-    
-    }).then((results) => {
-    
-      let returnjson = {}
-      returnjson['queryrows'] = results;
-      res.status(200).send(returnjson);
-      console.log('Succesful Operation')
-      
-      
-      });
-  }
-  return
-  //regions, combinedkey
-} else if(countries == 'all' && regions != 'all' && combinedkey != 'all'){
-  if(format == 'json'){
-    dailyReport.findAll({
-      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
-      where: {
-        province_state: {
-          [Op.or]: regions},
-        combined_key: {
-          [Op.or]: combinedkey
-        }
-        }
-    
-    }).then((results) => {
-    
-      let returnjson = {}
-      returnjson['queryrows'] = results;
-      res.status(200).send(returnjson);
-      console.log('Succesful Operation')
-      
-      
-      });
-  }
-  return
-  //all attributes
-} else if(countries != 'all' && regions != 'all' && combinedkey != 'all'){
-  if(format == 'json'){
-    dailyReport.findAll({
-      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
-      where: {
-        province_state: {
-          [Op.or]: regions},
-        country_region: {
-          [Op.or]: countries},
-        combined_key: {
-          [Op.or]: combinedkey
-        }
-        }
-    
-    }).then((results) => {
-    
-      let returnjson = {}
-      returnjson['queryrows'] = results;
-      res.status(200).send(returnjson);
-      console.log('Succesful Operation')
-      
-      
-      });
-  }
-  return
-  //no attributes specified, get all
-} else if(countries == 'all' && regions == 'all' && combinedkey == 'all'){
-  if(format == 'json'){
-    dailyReport.findAll({
-      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
-    
-    }).then((results) => {
-    
-      let returnjson = {}
-      returnjson['queryrows'] = results;
-      res.status(200).send(returnjson);
-      console.log('Succesful Operation')
-      
-      
-      });
-  }
-  return
+let where = {}
+if(countries != 'all'){
+  where.country_region = {[Op.or]: countries}
+}
+if(regions != 'all'){
+  where.province_state = {[Op.or]: regions}
+}
+if(combinedkey != 'all'){
+  where.combined_key = {[Op.or]: combinedkey}
 }
 
-
-
-
-
-
-
-
-
-  if(format == 'json'){
-    dailyReport.findAll().then((results) => {
+if(format == 'json'){
+  dailyReport.findAll({
+    attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
+    where: where
+  
+  }).then((results) => {
+  
+    let returnjson = {}
+    returnjson['queryrows'] = results;
+    res.status(200).send(returnjson);
+    console.log('Succesful Operation')
     
-      let returnjson = {}
-      returnjson['queryrows'] = results;
-      res.status(200).send(returnjson);
-      console.log('Succesful Operation')
-      return
+    
+    });
+}
+return
+
+
+
+
+
+
+
+
+  // if(format == 'json'){
+  //   dailyReport.findAll().then((results) => {
+    
+  //     let returnjson = {}
+  //     returnjson['queryrows'] = results;
+  //     res.status(200).send(returnjson);
+  //     console.log('Succesful Operation')
+  //     return
       
-      });
-  }
+  //     });
+  // }
 }
 
 
