@@ -227,7 +227,14 @@ exports.getReport  = async (req, res) => {
     }).then((results) => {
     
       let returnjson = {}
-      returnjson['queryrows'] = results;
+      
+      for(let i = 0; i < results.length; i+=1){
+        const olddata = results[i]
+        for(let j = 0; j < data_type.length; j+=1){
+          olddata[data_type[j]] = parseInt(olddata[data_type[j]])
+        }
+      }
+      returnjson['Daily Report'] = results;
       res.status(200).send(returnjson);
       console.log('Succesful Operation')
       
