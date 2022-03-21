@@ -3,8 +3,14 @@ const Papa = require('papaparse');
 exports.Parse = (csvstring) => {
     const parsedbody = Papa.parse(csvstring).data;
     let rowstoadd = []
-    
-    
+    let test = parsedbody[0].slice(0, 4)
+    console.log(test)
+    if (JSON.stringify(test) != JSON.stringify([
+      'Province/State',
+      'Country/Region','Lat','Long'
+    ])){
+      return "INVALID"
+    }
   
 
     
@@ -13,6 +19,7 @@ exports.Parse = (csvstring) => {
     for(let i = 1; i < parsedbody.length; i+=1){
       
       let row = parsedbody[i]
+      
       
       if(row.length != headerLength){
         return "INVALID"
@@ -31,6 +38,9 @@ exports.Parse = (csvstring) => {
       try{
         for(let i = 4; i < headerLength; i+=1){
           data[i - 4][1] = parseInt(row[i], 10);
+          if (parseInt(row[i], 10) < 0 ||  isNaN(parseInt(row[i], 10))){
+              return "MALFORMED"
+          }
          
         }
       } catch(error) {

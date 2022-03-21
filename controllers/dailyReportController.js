@@ -56,6 +56,11 @@ exports.addReport = async (req, res) => {
         res.status(422).send("Invalid format");
         return
       }
+      if(rowstoadd == "MALFORMED"){
+        //this check happens in parser
+        res.status(400).send("Malformed Request");
+        return
+      }
 
       for(let i = 0; i < rowstoadd.length; i+=1){
         const report = await sequelize.models.dailyReport.upsert({

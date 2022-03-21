@@ -43,6 +43,10 @@ exports.addSeries = async (req, res) => {
       res.status(422).send("Invalid file format")
       return
     }
+    if(rowstoadd == "MALFORMED"){
+      res.status(400).send("Malformed Request")
+      return
+    }
     
     
       
