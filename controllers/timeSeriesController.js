@@ -38,9 +38,7 @@ exports.addSeries = async (req, res) => {
     await timeSeries.sync();  
 
     const rowstoadd = timeSeriesParser.Parse(body);
-    console.log(rowstoadd[0].data[0][1] + "HEEEEEEEEER");
-    console.log(rowstoadd[1].data[0][1] + "HEEEEEEEEER");
-    console.log(rowstoadd[2].data[0][1] + "HEEEEEEEEER");
+    
     if(rowstoadd == "INVALID"){
       res.status(422).send("Invalid file format")
       return
@@ -212,6 +210,70 @@ exports.getSeries = async (req, res) => {
           res.status(200).send(returnjson);
           console.log('Succesful Operation')
       });
+      }
+      else{
+        let topdone = 0;
+        timeSeries.findAll({
+          attributes: ['provincestate', 'countryregion', 'data'], 
+          where: where
+        }).then((results) => {
+        
+          let returnstr = 'Province/State,Country/Region,'
+          let newreturn = []
+          for(let i =0; i< results.length; i+=1){
+            const row = results[i]
+            const olddata = row.data
+            let newdata = {};
+            let start = 0;
+            let end = olddata.length - 1
+            if(startdate!= undefined){
+              for(let i =0; i <olddata.length; i+=1){
+                if(olddata[i][0] == startdate){
+                  start = i
+                }
+              }
+            }
+            if(enddate!= undefined){
+              for(let i =0; i <olddata.length; i+=1){
+                if(olddata[i][0] == enddate){
+                  end = i
+                }
+              }
+            }
+            if (topdone == 0){
+              for(let j = start; j < end + 1; j+=1){
+                if(j != end){
+                  returnstr += olddata[j][0] + ','
+  
+                }
+                else{returnstr += olddata[j][0] + '\n'}
+                 
+              }
+              topdone = 1;
+
+            }
+            
+            returnstr += row.provincestate +',' + row.countryregion + ','
+            for(let j = start; j < end + 1; j+=1){
+              if(j != end){
+                returnstr += olddata[j][1] + ','
+                
+
+              }
+              else{returnstr += olddata[j][1] + '\n'}
+              
+            }
+            
+          
+          
+          
+          
+          };
+          
+          res.status(200).send(returnstr);
+          console.log('Succesful Operation')
+      });
+
       }
 
     }
