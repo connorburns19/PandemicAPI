@@ -11,11 +11,7 @@ exports.addReport = async (req, res) => {
     console.log(req)
     const body = req.body
     
-    
-
-
-
-
+  
     const dailyReport = sequelize.define('dailyReport', {
         // Model attributes are defined here
         
@@ -104,6 +100,7 @@ exports.deleteReport = async (req, res) => {
     return
 
 }
+//GET QUERY
 exports.getReport  = async (req, res) => {
   const name = req.params.dailyreport_name;
   let notfoundcount = 0;
@@ -113,38 +110,60 @@ exports.getReport  = async (req, res) => {
       res.status(400).send("Malformed Request");
       return
   }
+  
   let countries = req.query.countries;
   if(countries != undefined){
-    countries = countries.replace(' ', '');
     countries = countries.slice(1, countries.length - 1);
     countries = countries.split(',');
-
+    for(let i = 0; i < countries.length; i+=1){
+      countries[i] = countries[i].trim()
+    }
   }
-  
-  
-  console.log(countries)
-  
   if(countries == undefined){
     countries = 'all'
   }
+  
+  
   let regions = req.query.regions;
+  if(regions != undefined){
+    regions = regions.slice(1, regions.length - 1);
+    regions = regions.split(',');
+    for(let i = 0; i < regions.length; i+=1){
+      regions[i] = regions[i].trim()
+    }
+  }
   if(regions == undefined){
     regions = 'all'
   }
-  let combinedkey = req.query.combined_key;
+  
+  
+  let combinedkey = req.query.combinedkey;
+  if(combinedkey != undefined){
+    combinedkey = combinedkey.slice(1, combinedkey.length - 1);
+    combinedkey = combinedkey.split('",');
+    for(let i = 0; i < combinedkey.length; i+=1){
+      combinedkey[i] = combinedkey[i].replaceAll(/"/g, '')
+      combinedkey[i] = combinedkey[i].trim()
+    }
+  }
   if(combinedkey == undefined){
     combinedkey = 'all'
   }
+  
+
   let data_type = req.query.data_type;
   if(data_type != undefined){
-    data_type = data_type.replace(' ', '');
     data_type = data_type.slice(1, data_type.length - 1);
     data_type = data_type.split(',');
-
+    for(let i = 0; i < data_type.length; i+=1){
+      data_type[i] = data_type[i].trim()
+    }
   }
   if(data_type == undefined){
     data_type = ['active', 'confirmed', 'deaths', 'recovered']
   }
+  
+  
   let format = req.query.format
   console.log(typeof(format));
   if(format == undefined){
@@ -189,18 +208,21 @@ exports.getReport  = async (req, res) => {
     tableName: name
   });
 
-console.log(format);
-//await dailyReport.sync(); 
+  let where = {}
+  if(countries != 'all'){
+    where.country_region = {[Op.or]: countries}
+  }
+  if(regions != 'all'){
+    where.province_state = {[Op.or]: regions}
+  }
+  if(combinedkey != 'all'){
+    where.combined_key = {[Op.or]: combinedkey}
+  }
 
-// Cases:
-// Only countries given
-if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
   if(format == 'json'){
     dailyReport.findAll({
       attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
-      where: {
-        country_region: {
-          [Op.or]: countries}}
+      where: where
     
     }).then((results) => {
     
@@ -213,27 +235,6 @@ if(countries != 'all' && regions == 'all' && combinedkey == 'all'){
       });
   }
   return
-}
-
-
-
-
-
-
-
-
-
-  if(format == 'json'){
-    dailyReport.findAll().then((results) => {
-    
-      let returnjson = {}
-      returnjson['queryrows'] = results;
-      res.status(200).send(returnjson);
-      console.log('Succesful Operation')
-      return
-      
-      });
-  }
 }
 
 
