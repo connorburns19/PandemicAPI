@@ -2,26 +2,25 @@ const sequelize = require('../sequelize.js').sequelize;
 const { DataTypes, Op } = require('sequelize');
 const queryInterface = sequelize.getQueryInterface();
 const dailyReportsParser = require('../parsers/dailyReportsParser.js');
-const { QueryInterface } = require('sequelize');
-const { rows } = require('pg/lib/defaults');
 
-
+//POST QUERY
 exports.addReport = async (req, res) => {
     const name = req.params.dailyreport_name
     console.log(req)
     const body = req.body
     
-  
-    const dailyReport = sequelize.define('dailyReport', {
-        // Model attributes are defined here
-        
+    try {
+      const dailyReport = sequelize.define('dailyReport', {
+        // Model attributes are defined here, this is basically the schema
         province_state: {
           type: DataTypes.STRING,
-          allowNull: false
+          allowNull: false,
+          primaryKey: true
         },
         country_region: {
           type: DataTypes.STRING,
-          allowNull: false
+          allowNull: false,
+          primaryKey: true
           // allowNull defaults to true
         },
         
@@ -50,37 +49,41 @@ exports.addReport = async (req, res) => {
       });
 
 
-    await dailyReport.sync(); 
-    const rowstoadd = dailyReportsParser.Parse(body);
+      await dailyReport.sync(); 
+      const rowstoadd = dailyReportsParser.Parse(body);
+      if(rowstoadd == "INVALID"){
+        //this check happens in parser
+        res.status(422).send("Invalid format");
+        return
+      }
 
-    for(let i = 0; i < rowstoadd.length; i+=1){
-      const report = await sequelize.models.dailyReport.create({
-        province_state: rowstoadd[i].provincestate,
-        country_region: rowstoadd[i].countryregion,
-        confirmed: rowstoadd[i].confirmed,
-        deaths: rowstoadd[i].deaths,
-        recovered: rowstoadd[i].recovered,
-        active: rowstoadd[i].active,
-        combined_key: rowstoadd[i].combinedkey,
-    });
-    console.log("auto-generated ID:", report.id);
-    
+      for(let i = 0; i < rowstoadd.length; i+=1){
+        const report = await sequelize.models.dailyReport.upsert({
+          province_state: rowstoadd[i].provincestate,
+          country_region: rowstoadd[i].countryregion,
+          confirmed: rowstoadd[i].confirmed,
+          deaths: rowstoadd[i].deaths,
+          recovered: rowstoadd[i].recovered,
+          active: rowstoadd[i].active,
+          combined_key: rowstoadd[i].combinedkey,
+      });
+      console.log("auto-generated ID:", report.id);
       
-    };
-    res.status(200).send("Upload succesful");
-    
+        
+      };
+      res.status(200).send("Upload succesful");
+      return
+    } catch(error) {
+      res.status(400).send("Malformed request");
+      return
+    }
 
-    
-
-    
-    //res.status(400).send("Malformed request");
-    //res.status(422).send("Invalid file contents");
-    return
 
 
 
 
 }
+//DELETE QUERY
 exports.deleteReport = async (req, res) => {
     const name = req.params.dailyreport_name
     let notfoundcount = 0
@@ -91,9 +94,6 @@ exports.deleteReport = async (req, res) => {
         return
     }
 
-
-    
-    
     await queryInterface.dropTable(name, {});
     
     res.status(200).send("Sucessfully deleted");
