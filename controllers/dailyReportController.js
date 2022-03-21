@@ -208,57 +208,33 @@ exports.getReport  = async (req, res) => {
     tableName: name
   });
 
-console.log(format);
-//await dailyReport.sync(); 
+  let where = {}
+  if(countries != 'all'){
+    where.country_region = {[Op.or]: countries}
+  }
+  if(regions != 'all'){
+    where.province_state = {[Op.or]: regions}
+  }
+  if(combinedkey != 'all'){
+    where.combined_key = {[Op.or]: combinedkey}
+  }
 
-// Cases:
-// Countries only
-let where = {}
-if(countries != 'all'){
-  where.country_region = {[Op.or]: countries}
-}
-if(regions != 'all'){
-  where.province_state = {[Op.or]: regions}
-}
-if(combinedkey != 'all'){
-  where.combined_key = {[Op.or]: combinedkey}
-}
-
-if(format == 'json'){
-  dailyReport.findAll({
-    attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
-    where: where
-  
-  }).then((results) => {
-  
-    let returnjson = {}
-    returnjson['queryrows'] = results;
-    res.status(200).send(returnjson);
-    console.log('Succesful Operation')
+  if(format == 'json'){
+    dailyReport.findAll({
+      attributes: ['country_region', 'province_state'].concat(data_type, ['combined_key']), 
+      where: where
     
+    }).then((results) => {
     
-    });
-}
-return
-
-
-
-
-
-
-
-
-  // if(format == 'json'){
-  //   dailyReport.findAll().then((results) => {
-    
-  //     let returnjson = {}
-  //     returnjson['queryrows'] = results;
-  //     res.status(200).send(returnjson);
-  //     console.log('Succesful Operation')
-  //     return
+      let returnjson = {}
+      returnjson['queryrows'] = results;
+      res.status(200).send(returnjson);
+      console.log('Succesful Operation')
       
-  //     });
-  // }
+      
+      });
+  }
+  return
 }
 
 
