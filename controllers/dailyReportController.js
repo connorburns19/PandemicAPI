@@ -113,7 +113,7 @@ exports.getReport  = async (req, res) => {
   try {await queryInterface.describeTable(name);} catch(error){notfoundcount+=1}
 
   if (notfoundcount == 1){
-      res.status(400).send("Malformed Request");
+      res.status(404).send("Table not found");
       return
   }
   
@@ -166,7 +166,7 @@ exports.getReport  = async (req, res) => {
     }
   }
   if(data_type == undefined){
-    data_type = ['active', 'confirmed', 'deaths', 'recovered']
+    data_type = ['confirmed', 'deaths', 'recovered', 'active']
   }
   
   
