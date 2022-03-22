@@ -36,7 +36,8 @@ When doing a get request, you use the same url as posting, where you get the inf
 
 https://coviddata-301.herokuapp.com/api/daily_reports/DailyReportJune21?format=json&countries=[Canada,USA]&regions=[Ontario,Ohio]&combined_key=[“something”]&data_type=[active]
 
-This would return a JSON object with an attribute called "Daily Report", that holds a list of JSON objects, each of which is a row in the resulting query. Specifying no format or format=csv will return the result as csv text.
+This would return a JSON object with an attribute called "Daily Report", that holds a list of JSON objects, each of which is a row in the resulting query. Specifying no format or format=csv will return the result as csv text. <br/>
+![alt text](https://i.ibb.co/s5Z3dRD/jsondailyreport.png)
 ### DELETE
 
 Deleting is straightforward; send a Delete request to the specified table name and if it exists, it will be dropped in the database, and otherwise the response will indicate that the table was not found.
@@ -58,7 +59,9 @@ When doing a GET request, you use the same url as posting, where you get the inf
 
 https://coviddata-301.herokuapp.com/api/time_series/Global/deaths?format=json&countries=[Canada,USA]&regions=[Ontario,Ohio]]&data_type=[active]
 
-This would return a JSON object with an attribute called "Time Series", that holds a list of JSON objects, each of which is a row in the resulting query. Each row will have an attribute called data, which is an object with string dates as the key and the value associated with that date. Specifying no format or format=csv will return the result as csv text.
+This would return a JSON object with an attribute called "Time Series", that holds a list of JSON objects, each of which is a row in the resulting query. Each row will have an attribute called data, which is an object with string dates as the key and the value associated with that date. Specifying no format or format=csv will return the result as csv text. <br/>
+
+![alt text](https://i.ibb.co/vcwpMBP/jsontimeseries.png)
 
 ### DELETE
 https://coviddata-301.herokuapp.com/api/daily_reports/:tablename
