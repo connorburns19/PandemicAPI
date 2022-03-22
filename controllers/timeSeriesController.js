@@ -101,7 +101,7 @@ exports.getSeries = async (req, res) => {
   try {await queryInterface.describeTable(tablename, {});} catch(error){notfoundcount+=1}
   
   if (notfoundcount == 1){
-      res.status(400).send("Malformed Request");
+      res.status(404).send("Table not found");
       return
   }
   let countries = req.query.countries;
@@ -210,7 +210,7 @@ exports.getSeries = async (req, res) => {
           
           
           };
-          returnjson['queryrows'] = newreturn;
+          returnjson['Time Series'] = newreturn;
           res.status(200).send(returnjson);
           console.log('Succesful Operation')
       });

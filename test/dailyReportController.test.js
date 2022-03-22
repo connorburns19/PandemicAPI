@@ -1,8 +1,6 @@
 let chai = require("chai")
 let chaiHttp = require("chai-http");
-const res = require("express/lib/response");
 let server = require('../server.js')
-let sequelize = require('../sequelize.js')
 
 chai.should();
 
