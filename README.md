@@ -66,3 +66,4 @@ https://coviddata-301.herokuapp.com/api/daily_reports/:tablename
 When sending a DELETE request, if the tablename has any tables in the database, all of them will be dropped (deaths, confirmed and active). If it does not exist the response will tell you this.
 
 # CI and CD Proof
+![alt text](https://i.ibb.co/N3kqxPz/CD-proof.png)
