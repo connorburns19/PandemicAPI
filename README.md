@@ -74,3 +74,5 @@ For proof of automation for testing, please look at .github/workflows/node.js.ym
 ![alt text](https://i.ibb.co/cQfjXbt/Screen-Shot-2022-03-21-at-22-28-50.png)
 ![alt text](https://i.ibb.co/61BDpzh/image.png)
 
+# Database
+The two examples given on the swagger hub, are currently in the database at url https://coviddata-301.herokuapp.com/api/daily_reports/swagexample and <br/> https://coviddata-301.herokuapp.com/api/time_series/swagexample/deaths
