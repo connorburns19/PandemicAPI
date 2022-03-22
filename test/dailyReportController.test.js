@@ -9,7 +9,7 @@ chai.use(chaiHttp)
 describe("Daily Report HTML Requests", function(){
     //test the POST route
     describe("Testing whether correctly formatted data is added and retrievable", function(){
-        const reqBody = `FIPS,Admin2,Province_State,Country_Region,LastUpdate,Lat,Long,Confirmed,Deaths,Recovered,Active,Combined_Key,Incidence_Rate,Case-Fatality_Ratio\n12332,Admin,Ohio,America,Yesterday,44.0,22.0,1,2,3,4,"Ohio, America",1.0,2.0`
+        const reqBody = `FIPS,Admin2,Province_State,Country_Region,Last_Update,Lat,Long_,Confirmed,Deaths,Recovered,Active,Combined_Key,Incidence_Rate,Case-Fatality_Ratio\n12332,Admin,Ohio,America,Yesterday,44.0,22.0,1,2,3,4,"Ohio, America",1.0,2.0`
         it("It should create a new table and add the data to the database", (done) =>{
             chai.request(server).post('/api/daily_reports/TESTDAILY').type('text').send(reqBody).end((err, response) =>{
                 response.should.have.status(200);     
@@ -37,7 +37,7 @@ describe("Daily Report HTML Requests", function(){
 
     )})
     describe("Testing whether post updates existing rows instead of creating new ones", function(){
-        const reqBody = `FIPS,Admin2,Province_State,Country_Region,LastUpdate,Lat,Long,Confirmed,Deaths,Recovered,Active,Combined_Key,Incidence_Rate,Case-Fatality_Ratio\n12332,Admin,Ohio,America,Yesterday,44.0,22.0,11,12,13,14,"Ohio, America",1.0,2.0`
+        const reqBody = `FIPS,Admin2,Province_State,Country_Region,Last_Update,Lat,Long_,Confirmed,Deaths,Recovered,Active,Combined_Key,Incidence_Rate,Case-Fatality_Ratio\n12332,Admin,Ohio,America,Yesterday,44.0,22.0,11,12,13,14,"Ohio, America",1.0,2.0`
         it("It should post succesfully", (done)=>{
             chai.request(server).post('/api/daily_reports/TESTDAILY').type('text').send(reqBody).end((err, response)=>{
                 response.should.have.status(200);
