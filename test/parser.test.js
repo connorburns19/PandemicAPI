@@ -16,7 +16,7 @@ describe("Parser Tests", function(){
     })
     describe("Daily Report Parser", function(){
         it('Parses String into Daily Reports', function(){
-            const exampleString = 'FIPS,Admin2,Province_State,Country_Region,LastUpdate,Lat,Long,Confirmed,Deaths,Recovered,Active,Combined_Key,Incidence_Rate,Case-Fatality_Ratio\n45001,Abbeville,South Carolina,US,2020-06-06 02:33:00,34.22333378,-82.46170658,47,0,0,47,"Abbeville, South Carolina, US",191.625555510254,0.0'
+            const exampleString = 'FIPS,Admin2,Province_State,Country_Region,Last_Update,Lat,Long_,Confirmed,Deaths,Recovered,Active,Combined_Key,Incidence_Rate,Case-Fatality_Ratio\n45001,Abbeville,South Carolina,US,2020-06-06 02:33:00,34.22333378,-82.46170658,47,0,0,47,"Abbeville, South Carolina, US",191.625555510254,0.0'
             const rows = dailyReportParser.Parse(exampleString)
             assert.equal(rows[0].provincestate, 'South Carolina')
             assert.equal(rows[0].countryregion, 'US')
