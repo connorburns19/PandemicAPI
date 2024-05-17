@@ -1,3 +1,6 @@
+# Overview
+This repository is a public clone of an assignment that I completed in 2022 along side GitHub user prb27. This is a simple REST API for adding and fetching pandemic data from a PostgreSQL database, which was hosted on heroku at the time. We were given a specification/example for the format for the data, but everything else we had to build from scratch. This proect is no longer hosted, but feel free to read through the rest of his readme, and take a look at the code to see the code we devloped for this project. We received 100 percent on this assignment, so everything worked as requested.
+
 # Pair Programming 
 During the majority of this assignment, we were working together in the same room. We were both sitting next to each other, so we could always glance over and see what the other person was working on when we were doing our own thing, but it also made pair programming much easier. We also had a large monitor that one of us used, which made the pair programming process much more enjoyable to partake in. We didn’t pair program every feature, but our process went something like this:
 
